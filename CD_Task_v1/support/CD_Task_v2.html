@@ -1,0 +1,51 @@
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- <script src="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v7_centerCue_fix/support/vismemCC_orientation.js"></script> -->
+<script src="support/vismemCC_orientation.js"></script>
+<script src="https://timbrady.org/turk/TimTurkTools.js"></script>
+
+<link rel="stylesheet" type="text/css" href="support/showTrials.css">
+<link rel="stylesheet" type="text/css" href="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v7_centerCue/support/experiment_.css">
+
+<script> 
+
+        // Settings
+        var task='ChangeDetection_G1G2';
+        var c1=document.getElementById("myCanvas");
+        var ctx1=c1.getContext("2d");    
+        var centerX=c1.width/2;
+        var centerY=c1.height/2; 
+        var LRpos = centerX*0.75/2;  
+
+        var picsiz = Math.ceil(LRpos*1.5)*1.5;
+        var LRpos = 0;  
+        var width=c1.width;
+        var height=c1.height;
+        var objSize=35;
+        var objDist=100; 
+        var wheelRad=objSize+objDist+60;
+        var nubX=null;
+        var nubY=null;
+        var numDots=3;
+        var colRot= 0;
+        var circRot= 5.5;
+
+        var srcitem00 = "https://psyc241.ucsd.edu/S_Tim/UMI_Task_v7_centerCue_fix/support/gaborT0.png";
+        var srcitem01 = "https://psyc241.ucsd.edu/S_Tim/UMI_Task_v7_centerCue_fix/support/gaborT1.png";
+        var srcitem20 = "https://psyc241.ucsd.edu/S_Tim/UMI_Task_v7_centerCue_fix/support/gaborN0.png";
+        var srcitem21 = "https://psyc241.ucsd.edu/S_Tim/UMI_Task_v7_centerCue_fix/support/gaborN1.png";
+        
+        var T // Timing
+        T.preG1 = 50;
+        T.G1 = 500;
+        T.N1 = 200;
+        T.delay = 3000;
+        T.G2 = 500;
+        T.resp = 1000;
+        T.feedback = 250;
+        T.iti = 1000;
+
+
+
+
+</script>

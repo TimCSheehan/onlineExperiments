@@ -1,0 +1,93 @@
+.trialDiv {
+  display: none;
+  top: 50px;
+  left: 50%;
+  text-align: center;
+  z-index: -6;
+}
+.stim {
+  position: absolute;
+  width: 512px;
+  height: 512px;
+  background: url('gabor0.jpg') no-repeat;
+  /*background-position-x: 44px;*/
+
+}
+#fixation {
+  position: absolute;
+  left: 50%;
+  top: 300px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  user-select: none;
+  cursor: default;
+  z-index: -2;
+}
+
+.distract {
+  background: url('noise0.jpg') no-repeat;
+  /*background-position-x: 44px;*/
+  z-index: 10;
+  display: none;
+}
+
+#item1 {
+left: 1%; 
+z-index: -4;
+}
+#itemb1 {
+left: 1%; 
+background: url('gabor1.jpg') no-repeat;
+/*background-position-x: 44px;*/
+z-index: -5;
+}
+
+#noise1 {
+  left: 1%; 
+}
+
+#noiseb1 {
+  left: 1%; 
+  background: url('noise1.jpg') no-repeat;
+  /*background-position-x: 44px;*/
+}
+#item2 {
+right: 1%;
+z-index: -4;
+}
+#itemb2 {
+right: 1%;
+background: url('gabor1.jpg') no-repeat;
+/*background-position-x: 44px;*/
+z-index: -5;
+}
+#noise2 {
+  right: 1%;
+}
+#noiseb2 {
+  right: 1%;
+  background: url('noise1.jpg') no-repeat;
+  /*background-position-x: 44px;*/
+}
+#cue {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: 256px;
+  left: 50%;
+  margin-left: -50px;
+  z-index: -2;
+}
+#cueL{
+  z-index: -7
+}
+#cueR{
+  z-index: -8
+}
+#cueBL{
+  z-index: -9
+}
+#cueBR{
+  z-index: -10
+}

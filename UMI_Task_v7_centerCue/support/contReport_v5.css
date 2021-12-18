@@ -1,0 +1,60 @@
+/* Continuous report screen */
+#continuousReport {
+	width: 600px;
+	height: 600px;
+	border: 1px solid gray;
+	background: #808080;
+	position: absolute;
+	left: 50%;
+	margin-left: -300px;
+    display: none;
+    cursor: none;
+}
+
+#continuousStimulus {
+	width: 256px;
+	height: 256px;
+  	background: url('gaborT0.png') no-repeat;
+	margin: 168;
+}
+
+.dot {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	background: white;
+	border: 9px solid white;
+	border-radius: 9px;
+	top: 50px;
+	left: 50px;
+}
+.errorFeedback {
+	border: 9px solid green;
+}
+
+/*#ring {
+	position: absolute;
+	width: 600px;
+	height: 600px;
+	top: 0px;
+	left:0px;
+	background: url(ring.png);
+	background-position: center center;
+}*/
+
+#feedback {
+	width: 600px;
+	height: 600px;
+	border: 1px solid gray;
+	background: #808080;
+	margin: 20px auto;
+	position: relative;
+  display: none;
+}
+
+#feedbackReportedText {
+  position: absolute;
+  top: 40px;
+  left: 110px;
+  font-size: 14pt;
+}

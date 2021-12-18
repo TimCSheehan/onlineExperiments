@@ -1,0 +1,726 @@
+<html><head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://timbrady.org/turk/ensembleindivdiff/e9/seedrandom.js"></script>
+  <script src="https://timbrady.org/turk/TimTurkTools.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v5_noise/support/contReport_v5.css">
+  <link rel="stylesheet" type="text/css" href="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v5_noise/support/showTrials_v5.css">
+  <link rel="stylesheet" type="text/css" href="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v5_noise/support/experiment_v5.css">
+<!--   <link rel="stylesheet" type="text/css" href="support/contReport_v5.css">
+  <link rel="stylesheet" type="text/css" href="support/showTrials_v5.css">
+  <link rel="stylesheet" type="text/css" href="support/experiment_v5.css"> -->
+  <style>
+  * {
+    box-sizing: border-box;
+    cursor: none;
+  }
+
+  body {
+    background-color: #808080;
+    font-family: Arial, Helvetica; 
+  }
+</style>
+<script>
+
+var DEBUG = false;
+var taskVersion = 'UMI_TASK_v5_noise';
+var lieProb = 0.80;
+var numTrialsPerPart = [20, 120]; // 5s/trial, 12 trials/min 15min=180 trials
+function getSum(total, num) {
+    return total + num;
+}
+var nTrials = numTrialsPerPart.reduce(getSum) + 1;
+
+/* Pointers for where we are in the experiment: */
+var currentTrial = -1;
+var currentPart = 0;
+
+var GaborTrials = [];
+var GaborTrialsFull = [];
+var practiceGaborTrials = [];
+var curOrientMean = 20;
+var flickerPhase=0; // ambiguous starting position
+var isInstruct=1;
+var nInstruct=3;
+var nInstruct2=5;
+var startTaskTime = new Date();
+var numTrialsCompleted = 0;
+
+var cue1;
+var cue2;
+var myTargetRep;
+var myNoiseRep;
+var rotateFunction;
+
+
+// Timing 
+var times = {};
+times.fix1 = 500;
+times.targ = 1000; // 1000 ****
+times.noise = 250;
+times.fix15 = 500; //- NEW
+times.w_distract1 = 500; //- time after targ to start distract1
+times.cue1 = 750; //[500]- also use as an indicator variable
+times.w_distract2 = 500;
+times.fix2 = 1500; //1500
+times.cue2 = 750;
+times.fix3 = 250; //500
+times.feedback = 500;
+
+times.flicker = 125; // 125 ****
+times.distract = 500; //- NEW
+
+
+
+
+for (var i=0; i<numTrialsPerPart[0]; i++) { 
+  var curOrientL = Math.floor(Math.random()*180);
+  var curOrientR = Math.floor(Math.random()*180); 
+  var noiseOrientL = Math.floor(Math.random()*180);
+  var noiseOrientR = Math.floor(Math.random()*180); 
+  var distractOrientL = Math.floor(Math.random()*180);
+  var distractOrientR = Math.floor(Math.random()*180); 
+
+  var trialMode =  Math.ceil(Math.random()*3); //- 1= no-noise, 2= pre-noise, 3=post-noise
+  var angles = wrap([curOrientL, curOrientR]);
+  var noise = wrap([noiseOrientL, noiseOrientR]);
+  var distract = wrap([distractOrientL, distractOrientR]);
+  var cueLeft = Math.random()>.5;
+
+  GaborTrials.push({'orients': angles,
+    'cueLeft': cueLeft,
+    'lie': Math.random()>lieProb,
+    'isPractice': true,
+    'correctAngle': angles[Math.abs(cueLeft-1)],
+    'correctAngleRad':angles[Math.abs(cueLeft-1)]*Math.PI/180,
+    'pLie':lieProb,
+  	'noise': noise,
+  	'distract': distract,
+  	'trialMode': trialMode});
+
+}
+practiceGaborTrials = [GaborTrials[1],GaborTrials[15], GaborTrials[4],GaborTrials[6],GaborTrials[11]];
+practiceGaborTrials[0].lie = false;practiceGaborTrials[1].lie = false; practiceGaborTrials[2].lie = true;
+practiceGaborTrials[0].trialMode = 1;practiceGaborTrials[1].trialMode = 1;practiceGaborTrials[2].trialMode = 1;
+practiceGaborTrials[3].lie = true; practiceGaborTrials[4].lie = false; 
+practiceGaborTrials[3].trialMode = 2;practiceGaborTrials[4].trialMode = 3;
+
+for (var i=0; i<numTrialsPerPart[1]; i++) { 
+  var curOrientL = Math.floor(Math.random()*180);
+  var curOrientR = Math.floor(Math.random()*180); //at least 10 degrees off
+  var noiseOrientL = Math.floor(Math.random()*180);
+  var noiseOrientR = Math.floor(Math.random()*180); 
+  var distractOrientL = Math.floor(Math.random()*180);
+  var distractOrientR = Math.floor(Math.random()*180);
+
+  var trialMode = Math.ceil(Math.random()*3); //- 1= no-noise, 2= pre-noise, 3=post-noise
+  var angles = wrap([curOrientL, curOrientR]);
+  var noise = wrap([noiseOrientL, noiseOrientR]);
+  var distract = wrap([distractOrientL, distractOrientR]);
+  var cueLeft = Math.random()>.5;
+  GaborTrialsFull.push({'orients': angles,
+    'cueLeft': cueLeft,
+    'lie': Math.random()>lieProb,
+    'isPractice': true,
+    'correctAngle': angles[Math.abs(cueLeft-1)],
+    'correctAngleRad':angles[Math.abs(cueLeft-1)]*Math.PI/180,
+    'pLie':lieProb,
+  	'noise': noise,
+  	'distract': distract,
+    'trialMode': trialMode});
+}
+function Done() {
+  var dataToServer = {};
+  try{
+  dataToServer.id = getParameterByName("subjectId");} /* getParameterByName("code") */
+  catch(err) { dataToServer.id = Date.now();}
+  dataToServer.experimenter = 'S_Tim';
+  dataToServer.experimentName = taskVersion;
+  dataToServer.curData = JSON.stringify([taskVersion,lieProb,times, GaborTrials,GaborTrialsFull]);
+
+  $.post("https://psyc241.ucsd.edu/Turk/save.php", dataToServer, AfterSuccessDataSaving).fail(AfterFailedSaving);
+}
+function AfterSuccessDataSaving() {
+  $('#frameDone').show();
+  $('#submitButton').show();
+  // $('#done').html("All done, thanks! Please click submit button.");
+  console.log("Saved!");
+}
+function AfterFailedSaving() {
+  $('#frameDone').show();
+  console.log("oops, failed to save");
+  $('#submitButton').show();
+  $('#done').html("All done, thanks! Please click submit button.");
+}
+
+function StartExperiment() {
+  if (IsOnTurk() && IsTurkPreview() && DEBUG==false) {
+    alert("Please accept the HIT before continuing.");
+    return false;
+  }
+  $('#frame5').hide();
+
+  rotateFunction = SetRotation;
+
+  totalTrials = [GaborTrials, GaborTrialsFull]
+  $('#startExperimentButton').hide()
+  $('#instructions').hide();
+
+  document.getElementById('insertProb1').innerHTML = lieProb*100;
+  document.getElementById('insertProbInv').innerHTML =100- lieProb*100;
+  document.getElementById('insertTrialNum').innerHTML =numTrialsPerPart[0]+numTrialsPerPart[1];
+
+  if (isInstruct===1){
+    show_instruct_0();}
+    else if (isInstruct===0){
+      NextTrial();}
+    }
+    function NextTrial() {
+      if (isInstruct) {
+        isInstruct ++;
+        if (isInstruct>2){ // !=2
+          show_instruct_3();}
+          // else {show_instruct_4()};
+
+      // showTrialGabor(practiceGaborTrials[isInstruct]);}
+    }
+    else {
+      numTrialsCompleted++;
+      currentTrial++;
+      if (numTrialsCompleted%20 == 0){
+        var msg_trials = 'Note: ' + numTrialsCompleted + '/' + nTrials + ' trials completed.';
+        alert(msg_trials)
+      }
+      if (currentTrial>=numTrialsPerPart[currentPart]) {
+        if (currentPart==totalTrials.length-1) {
+          Done();
+          return;
+        } else {
+          currentTrial = 0;
+          currentPart++;
+
+    if (currentPart == 1) {
+      // alert("From now on you will not see how you did on each trial but will instead just advance to the next trial. Please do your best!");
+    }
+  }
+}
+
+showTrialGabor(totalTrials[currentPart][currentTrial]);}
+}
+
+function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+  results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function showTrialGabor(trialStruct) {
+  for (var i=0; i<2; i++) {
+    SetRotation('#item'+(i+1), trialStruct.orients[i]);
+    SetRotation('#itemb'+(i+1), trialStruct.orients[i]);
+    SetRotation('#noise'+(i+1), trialStruct.noise[i]);
+    SetRotation('#noiseb'+(i+1), trialStruct.noise[i]);
+    SetRotation('#distraction'+(i+1), trialStruct.distract[i]); // need to create said object :)
+    SetRotation('#distractionb'+(i+1), trialStruct.distract[i]);
+  }
+  setCue(trialStruct)
+
+// $('#allItems').css('margin-top', -1000); //tuck out of sight
+$('#fixation').show();
+setTimeout(function(){
+  $('.stim').show();
+  $('.distract').hide();
+  myTargetRep = setInterval(flickerItem, times.flicker,'#item');
+  $('#fixation').hide();
+  if (times.cue1==0){
+  $('#cueB' + cue1).show();}
+  setTimeout(function(){
+    clearInterval(myTargetRep);
+    $('.stim').hide();
+    $('#cueB' + cue1).hide();
+    
+    myNoiseRep = setInterval(flickerItem, times.flicker,'#noise');
+    setTimeout(function(){
+      clearInterval(myNoiseRep);
+      $('.distract').hide();
+      $('#fixation').show()
+      setTimeout(function(){
+      	
+      	if (trialStruct.trialMode===2){
+
+      		myDistractRep = setInterval(flickerItem,times.flicker,'#distraction');
+      	}
+      setTimeout(function(){
+      	if (trialStruct.trialMode===2){
+      		clearInterval(myDistractRep);}
+      // $('#fixation').hide();
+      $('.distractStim').hide();
+      setTimeout(function(){
+      	$('#fixation').hide();
+
+      if (times.cue1!=0){
+        $('#cueB' + cue1).show();}
+
+    setTimeout(function(){
+      $('#cueB' + cue1).hide();   
+      $('#fixation').show();
+      setTimeout(function(){
+      
+      setTimeout(function(){
+      	if (trialStruct.trialMode===3){
+      		myDistractRep = setInterval(flickerItem,times.flicker,'#distraction');
+      	}
+      	
+
+      setTimeout(function(){
+      	if (trialStruct.trialMode===3){
+      		clearInterval(myDistractRep)
+      		$('.distractStim').hide();
+      	}
+        $('#fixation').hide();
+        $('#cue' + cue2).show();
+
+        setTimeout(function(){
+          $('#cue' + cue2).hide();
+          $('#fixation').show();
+          setTimeout(function(){
+            $('#fixation').hide();
+            ShowContinuousReport(trialStruct);
+        },times.fix3); //isi
+      },times.cue2);//cue2
+    },times.fix2);// post cue1 wait'
+    },times.distract);
+    },times.w_distract2);
+    },times.cue1);
+	},times.w_distract1);
+    },times.distract)
+    },times.fix15);
+    },times.noise);
+  },times.targ); // presentation
+},times.fix1);
+}
+
+
+function flickerItem(word){
+  if (flickerPhase===0 ){
+    $(word+'b1').hide()
+    $(word+'b2').hide()
+    $(word+'1').show()
+    $(word+'2').show()
+    flickerPhase = 1;
+  }
+  else {
+    $(word+'1').hide()
+    $(word+'2').hide()
+    $(word+'b1').show()
+    $(word+'b2').show()
+    flickerPhase = 0;
+  }
+}
+
+function setCue(trialStruct){
+  if (trialStruct.cueLeft){
+    cue2 = 'L';
+  }
+  else {cue2='R';}
+  if (trialStruct.lie){
+    if (trialStruct.cueLeft){
+      cue1='R';
+    }
+    else {cue1='L';}
+  }
+  else { cue1=cue2;}
+}
+
+/* Always track the mouse */
+var mouseX, mouseY;
+$(function() {
+  $(document).bind('mousemove.overall', function(e) {
+    mouseX = e.pageX;
+    mouseY = e.pageY;
+  });
+  $(document).bind('keypress.blockEnter', function(e){
+    if ( e.which == 13 ) {
+      return false; 
+    }
+  });
+});
+
+/* Handle continuous report for either gabors or faces by using a single
+image with 360 images side-by-side in it, in the style of a css sprite */
+function ShowContinuousReport(trialStruct) {
+  var centerX = 300, centerY = 300;
+  var ringSize = 250;
+  var angleDeg = 0;
+  var curError = 360;
+  var startTime = new Date();
+
+
+  SetRotation('#continuousStimulus', trialStruct.meanOrient);
+  SetRotation('#feedbackReported', trialStruct.meanOrient);
+  SetRotation('#feedbackCorrect', trialStruct.meanOrient);
+  $('.errorFeedback').hide()
+
+  $(document).bind('mousemove.curTrial', function(e) {
+   var parentOffset = $('#continuousReport').offset(); 
+   var relX = e.pageX - parentOffset.left - centerX;
+   var relY = e.pageY - parentOffset.top - centerY;
+   var curAngle = Math.atan2(relY,relX);
+   angleDeg = curAngle / Math.PI * 180.0;
+   angleDeg = (angleDeg < 0) ? angleDeg+360:angleDeg;
+   var imgNum = Math.round(angleDeg);
+   rotateFunction('#continuousStimulus', imgNum);
+   $('#pointer').css({'left': centerX + Math.cos(curAngle)*ringSize-9, 
+     'top': centerY + Math.sin(curAngle)*ringSize-9});
+   $('#pointer2').css({'left': centerX - Math.cos(curAngle)*ringSize-9, 
+     'top': centerY - Math.sin(curAngle)*ringSize-9});
+   if (trialStruct.isPractice) {
+    curError = Math.min(Math.abs(angleDeg-trialStruct.correctAngle), 
+      Math.abs((angleDeg+360)-trialStruct.correctAngle), 
+      Math.abs((angleDeg-360)-trialStruct.correctAngle));
+    var angleDegFlip = wrap([angleDeg+180]);
+    curError = Math.min(curError, Math.abs(angleDegFlip[0]-trialStruct.correctAngle), 
+      Math.abs((angleDegFlip[0]+360)-trialStruct.correctAngle), 
+      Math.abs((angleDegFlip[0]-360)-trialStruct.correctAngle));
+  }
+  if (e.isFakeTrigger) {
+    trialStruct.startedAngle = Math.round(angleDeg);
+  }
+});
+
+  $(document).bind('click.curTrial', function(e) {
+   trialStruct.reportedAngle = Math.round(angleDeg);
+   trialStruct.rt = (new Date()) - startTime;
+   trialStruct.mstime = (new Date()) - startTaskTime;
+   $(document).unbind('click.curTrial');
+   $(document).unbind('mousemove.curTrial');
+
+   if (trialStruct.isPractice) {
+    if (curError>15){var colorSet='red';}
+    else {var colorSet='green'}
+      $('#pointerFeedback').css({'left': centerX + Math.cos(trialStruct.correctAngleRad)*ringSize-9, 
+       'top': centerY + Math.sin(trialStruct.correctAngleRad)*ringSize-9,
+       'border-color':colorSet});
+    $('#pointerFeedback2').css({'left': centerX -Math.cos(trialStruct.correctAngleRad)*ringSize-9, 
+     'top': centerY - Math.sin(trialStruct.correctAngleRad)*ringSize-9,
+     'border-color':colorSet});
+    $('.errorFeedback').show()
+    console.log(trialStruct.correctAngle,angleDeg,curError)
+
+    $(document).bind('click.feedback', function(e) {
+      // $('#feedback').hide(); 
+      $('.errorFeedback').hide()
+      $("#continuousReport").hide();
+      NextTrial();
+      $(document).unbind('click.feedback');
+    });
+  } else {
+    $("#continuousReport").hide();
+    NextTrial();
+  }
+});
+
+  $("#continuousReport").show();
+  e = $.Event('mousemove');
+  e.pageX = mouseX;
+  e.pageY = mouseY;
+  e.isFakeTrigger = true;
+  $(document).trigger(e);
+}
+
+function SetRotation(item,deg) {
+  $(item).css({'transform':'rotate('+deg+'deg)', 
+    '-ms-transform':'rotate('+deg+'deg)', 
+    '-webkit-transform':'rotate('+deg+'deg)'});
+}
+function wrap(v) {
+  for (var i=0; i<v.length; i++) {
+    if (v[i]>360) { v[i]-=360; }
+    if (v[i]<0) { v[i]+=360; }
+  }
+  return v;
+} 
+$(window).load(function () {
+  $('#startExperimentButton').show();
+  $('#loading').hide();
+});
+
+function show_instruct_0() { // just show non-moving stimuli
+  if ($(window).width() >= 600 ){ //&& screen.width*.8 < $(window).width()){
+    $('#instructions').hide();
+    for (var i=0; i<2; i++) {
+      SetRotation('#item'+(i+1), [30,-20][i+1]);
+      SetRotation('#itemb'+(i+1), [30,-20][i+1]);
+    }
+    $('#item1').show();
+    $('#item2').show();
+    // $('#fixation').show();
+    $('#frame1').show();
+      // Begin
+      setTimeout(function(){
+        $('#msg1').show() // lets see them moving?
+        $(document).on("keypress.trialWait", PressedKey1);
+      },1000)
+      
+
+      function PressedKey1(evt) {
+        console.log(evt.which)
+        evt.preventDefault(); 
+        if (evt.which == 32) {
+          show_instruct_1();
+        };
+      };
+    };
+  };
+function show_instruct_1(){ // show flashing stimuli + noise patch. Explain two arrows
+  $(document).off("keypress.trialWait");
+  $('#frame1').hide();
+  $('#frame2').show();
+  $('#fixation').hide();
+  setTimeout(function(){
+    myTargetRep = setInterval(flickerItem, times.flicker,'#item');
+    if (times.cue1==0){
+      $('#cueB' + 'L').show();}
+      
+
+
+    setTimeout(function(){
+      clearInterval(myTargetRep);
+      $('.stim').hide();
+      $('#cueB' + 'L').hide();
+      
+      myNoiseRep = setInterval(flickerItem, times.flicker,'#noise');
+      setTimeout(function(){
+        clearInterval(myNoiseRep);
+        $('.distract').hide();
+        $('#fixation').show();
+        setTimeout(function(){
+        	$('#fixation').hide();
+        if (times.cue1!=0){
+          $('#cueB' + 'L').show();}
+        setTimeout(function(){
+          $('#cueB' + 'L').hide();
+          $('#msg21').show()
+          setTimeout(function(){
+            $('#msg22').show()
+            $(document).on("keypress.trialWait", PressedKey2);
+          },2000);
+        },1000); //1000
+        },times.fix15);
+      },times.noise);
+      
+    },times.targ);
+  },100);
+
+  function PressedKey2(evt) {
+    console.log(evt.which)
+    evt.preventDefault(); 
+    if (evt.which == 32) {
+      show_instruct_2();
+    };
+  };
+};
+
+  function show_instruct_2() { //show trial which goes to dial, message comes up about dial.
+    $(document).off("keypress.trialWait");
+    $('#frame2').hide();
+  showTrialGabor(practiceGaborTrials[0])
+  $(document).on("click.trialWait", PressedKey3);
+  setTimeout(function(){
+    $('#frame3').show();},times.fix2 + times.fix3 + 8000);
+
+  function PressedKey3() {
+    $('#msg31').show();
+    $(document).on("click.trialWait", PressedKey31);
+  };
+  function PressedKey31(){
+    show_instruct_3();
+  };
+};
+function show_instruct_3() {
+  $(document).off("click.trialWait");
+  $('#frame3').hide();
+  
+  // isInstruct +=1; // here will be 2 now
+  function NextPracticeTrial(){
+    if (isInstruct<=nInstruct){
+      showTrialGabor(practiceGaborTrials[isInstruct-1]);}
+    else {
+      if (isInstruct==(nInstruct+1)){
+      $('#frame4').show();}
+      show_instruct_4();}
+  };
+NextPracticeTrial();
+};
+function show_instruct_4(){
+  
+  function NextPracticeTrial2(){
+    $(document).off("keypress.trialWait");
+    $('#frame4').hide();
+    if (isInstruct<=nInstruct2){
+      showTrialGabor(practiceGaborTrials[isInstruct-1]);}
+    else {show_instruct_5()}};
+    if (isInstruct>(nInstruct+1)){NextPracticeTrial2()}
+    else{$(document).on("keypress.trialWait", NextPracticeTrial2);};
+  
+};
+
+function show_instruct_5(){
+$('#frame5').show();
+ isInstruct = 0;
+  $('#startExperimentButton').show();
+};
+
+</script>
+<body>
+  <p style='text-align: center'><a href='javascript:StartExperiment()' id='startExperimentButton'>Start Experiment</a><span id="loading">Images still loading. Please wait. &nbsp; &nbsp; <img src="https://timbrady.org/turk/ensembleindivdiff/e6/spinner.gif" style="width: 30px; height: 30px"></span></p>
+
+
+  <input type="submit" value="Submit" name="submitButton" id="submitButton" style="display: none">
+
+  <div id="instructions">
+    <h2>This task is a visual memory task. 
+      <br> Please only do 1 HIT of this task and do not repeat it.</h2>
+      <p>This HIT will take approximately <b>27 minutes </b>. You will be presented with two gratings and will have to report the angle of one of them aftter a delay using a dial. Please do not participate if you do not have normal or corrected-to-normal vision (wearing glasses or contacts is fine). Durung the HIT, you will perform 150 trials of the same task; each trial lasts ~10 seconds. </p>
+
+      <p> <b> To proceed, please go fullscreen. Your screen needs to be wider than 1200 pixels to complete this HIT. </b> 
+        <br> Press <b>F11</b> to go full screen on a Windows PC
+      </p>
+      <p style="font:5px"> Clicking on the button will indicate that you have read this consent document and agree to participate. </p>
+      <div id="startExperimentButton">
+        <a href="#" id="startExperiment">Start Experiment</a>
+      </div>
+      <p></p>
+      <div id="consent" style="height:120px; border:1px solid #ccc;font:12px Arial, Helvetica; overflow:auto" align="justify">
+        <p align="center"><b>UNIVERSITY OF CALIFORNIA, SAN DIEGO
+          <br>CONSENT TO ACT AS A RESEARCH SUBJECT</b>
+
+          <p>
+            <br> Timothy Brady, Ph.D., is conducting a research study to find out more about attention, memory and vision.  You have been asked to participate because you are a healthy young adult.  There will be approximately 1600 participants in this study this year. The expected duration of the study is 5 years, though your participation will last only between 3 minutes and 45 minutes, with the exact expected timing listed in the HIT description.</p>
+
+            <p>
+              <br><b>PROCEDURES.</b> If you agree to participate in this study by accepting this HIT and continuing in the task, the following will happen to you:
+              <br> &emsp; 1. You will be shown displays of letters, words, or pictures, right here in your web browser. 
+              <br> &emsp; 2. You will try to perceive and remember these stimuli, and respond by pressing keys or moving and clicking the mouse in a manner that we will describe to you.</p>
+
+              <p>
+                <br> <b>RISKS.</b> You will be required only to continue to interact with your web browser and make responses for a short duration. Thus, no potential risks or discomforts are anticipated except for the possibility that some tasks may be slightly boring. However, there may be risks that are currently unforeseeable.</p>
+
+                <p>
+                  <br><b>PAYMENT/REMUNERATION.</b> In consideration of your time, you will receive payment at the rate described through the Amazon Mechanical Turk system. Compensation will range from $0.60 (for a 3 min task) up to as much as $8 (for a task that takes 45 min), with rates between $8/hr and $12/hr. The exact payment rate for this HIT is provided in the HIT description.</p>
+
+                  <p>
+                    <br><b>RIGHTS.</b> You may call the UCSD Human Research Protection Program at 858-657-5100 to ask about your rights as a research subject or to report research-related problems.</p>
+
+                    <p>
+                      <br><b>BENEFITS.</b>  There will be no direct benefit to you from these procedures.  However, the investigator may learn more about basic questions pertaining to attention, memory and vision.   This knowledge may have benefits to society in fields ranging from improving education to visual design, but these benefits will be indirect.</p>
+
+                      <p>
+                        <br><b>EXPLANATION.</b>  The researcher has explained this study to you and answered your questions.  If you have questions about the research or research-related problems, including any adverse events, you may reach Dr. Timothy Brady at timbrady@ucsd.edu or 858-822-4530.</p>
+
+                        <p>
+                          <br><b>VOLUNTARY NATURE OF PARTICIPATION.</b>  Participation in research is entirely voluntary.  You may refuse to participate or withdraw at any time without penalty. The alternative to participation is to choose not to participate.</p>
+
+                          <p>
+                            <br><b>CONFIDENTIALITY.</b>  Research records will be kept confidential to the extent allowed by law.  As with all research, there is also the possibility of loss of confidentiality.  Information from participants such as yourself will be identified by a subject number, which is not associated with your identity, by the researchers, to minimize the potential loss of confidentiality.</p> 
+
+                            <p>
+                              <br>By clicking “I agree”, you are indicating that you are at least 18 years old, have read this consent form and agree to participate in this research study. Please print a copy of this page for your records.</p>
+                            </p>
+                          </div>
+                        </div>
+
+
+
+                        <div id='frame1'; class='trialDiv'; >
+                          <p>On each trial, you will see two gratings on the sides of the screen like this.
+                            <br>We encourage you to use visual memory (Taking a mental photograph).
+                            <br>Please keep your eyes focused the middle of the screen (where the <b>+</b> is) </p>
+
+                            <div hidden id='msg1'> <br> <br> Please press <b>space bar</b> to see what this the stimuli presentation will look like. </div>
+                          </div>
+
+                          <div id='frame2'; class='trialDiv'>
+                            <div hidden id='msg21'>
+                              <p> 
+                                <br> The stimuli will flash for 1 second. After a delay of 1 second, a <b>black</b> arrow will appear in the middle pointing to the left or right.
+                                <br> This arrow points to the item that you will <b> probably </b> be asked to recall (<span id='insertProb1'>%</span>% valid).
+                                <br><br><br> A brief flash of spatial noise will appear after the gratings and can be ignored. In addition, on some trials you will see a second set of gratings (along with the <b>+</b> in the middle of the screen) before or after the black arrow, <b>these should also be ignored</b> as best you can.
+
+                                <br><br> After a brief delay, a second <font color='white' style= 'font-weight: bold'> white</font> arrow will point in the direction of the grating you want to recall.
+                                <br>
+                                <br> While the <b>first arrow</b> can be seen as hint to focus your attention on one of the gratings, you will always respond 
+                                <br> according to the <font color='white' style= 'font-weight: bold'>second arrow</font>.
+                                <br><br> <a href="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v5_noise/support/Task_0.png" target="_blank">Click Here to see a schematic of the Task.</a>
+                              </div>
+                              <div hidden id='msg22'><br> <br> Press <b>space bar</b> to see what both arrows will look like. </div></p>
+                            </div>
+
+                            <div id='frame3'; class='trialDiv'>
+                              <p> 
+                                <br> After the second arrow, a dial will come on the screen 
+                                <br>that you can rotate with your mouse (like below).
+                                <br><br> Try your best to rotate the smaller grating inside to match the cued grating. 
+                                <br> Once you have the dial where you want it, click to send in your response.
+                                <br> After you respond, the correct orientation will appear as a pair of colored dots.
+                                <br> Try to keep your responses within 15 degrees (the dots will turn green)
+                                <br><br> Now make your best guess for the orientation for the last stimuli [click]
+                                <br>(don't worry if you don't remember)
+
+                                <div hidden id=msg31><br> <br>Just like that!<br> Now <b>click again</b> to complete a couple practice trials.</p> </div>
+                              </div>
+
+                              <div id='frame4'; class='trialDiv'>
+                                <p> 
+                                  <br> Good Job! You should have noticed that on the last trial the second, white, arrow
+                                  <br> pointed in different direction than the first, black, arrow. <br>This will happen on about 
+                                  <span id='insertProbInv'>%</span>% of trials.
+                                  <br><br> Because of this, you will have to remember both orientations throughout the 
+                                  <br> delay period, but it may still be advantageous to <b> prioritize </b> the initially cued item.
+                                  <br><br> Try your best to get your response errors as small as possible.
+                                  <br> Only remember the <b>FIRST</b> gratings you see (without the <b>'+'</b>) and ignore any later gratings seen with a <b>'+'</b>
+                                  <br><br> <a href="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v5_noise/support/Task_1.png" target="_blank">Click Here to see a schematic of the distration.</a>
+                                  
+                                  <br><br> Press <b>space bar</b> to try a couple trials with distracting stimuli. </p>
+                                </div>
+                               <div id='frame5'; class='trialDiv'>
+                               		<br> Great job. Just remember to focus on the first gratings presented after you finish the previous trial
+                               		<br><br> You will complete at total of <span id='insertTrialNum'>%</span> trials total.
+                               		<br><br> Press the button to start the full task. </p>
+                                </div>
+                                <div id='frameDone'; class='trialDiv'>
+                                  <br> You are done. Press submit to finish the HIT.
+                                </div>
+
+                                <!-- <div id="column"> -->
+                                  <div hidden id="fixation">+ </div>
+                                  <div hidden id=item1 class="stim"> </div>
+                                  <div hidden id=itemb1 class="stim"> </div>
+                                  <div hidden id=noise1 class="stim distract"> </div>
+                                  <div hidden id=noiseb1 class="stim distract"> </div>
+                                  <div hidden id=distraction1 class="distractStim"> </div>
+                                  <div hidden id=distractionb1 class="distractStim"> </div>
+
+                                  <div hidden id=item2 class="stim"> </div>
+                                  <div hidden id=itemb2 class="stim"> </div>
+                                  <div hidden id=noise2 class="stim distract"> </div>
+                                  <div hidden id=noiseb2 class="stim distract"> </div>
+                                  <div hidden id=distraction2 class="distractStim"> </div>
+                                  <div hidden id=distractionb2 class="distractStim"> </div>
+
+                                  <!-- <div id="cue"><img hidden src="http://serenceslab.ucsd.edu/experiments/tim/UMI_Task_v2/support/cueL.png" id="cueL"><img hidden src="http://serenceslab.ucsd.edu/experiments/tim/UMI_Task_v2/support/cueR.png" id="cueR"></div></div> -->
+                                  <div id="cue"><img hidden src="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v3/support/cueL.png" id="cueL">
+                                    <img hidden src="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v3/support/cueR.png" id="cueR">
+                                    <img hidden src="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v3/support/cueBL.png" id="cueBL">
+                                    <img hidden src="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v3/support/cueBR.png" id="cueBR"></div>
+
+                                    <!-- </div> column -->
+                                    <div id="continuousReport"><div id="continuousStimulus" ></div><div id="ring"></div><div id="pointer" class='dot'>&nbsp;</div><div id="pointer2" class='dot'>&nbsp;</div> 
+                                    <div id="pointerFeedback" class='dot errorFeedback'>&nbsp;</div><div id="pointerFeedback2" class='dot errorFeedback'>&nbsp;</div></div>
+
+
+                                  </body>
+                                  </html>

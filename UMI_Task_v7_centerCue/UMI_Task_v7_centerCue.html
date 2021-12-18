@@ -1,0 +1,1083 @@
+<!-- Turn from response angle to the answ = mod((respAng-wrot),360) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v7_centerCue/support/vismemCC_orientation.js"></script>
+<!-- <script src="support/vismemCC_orientation.js"></script> -->
+<!-- <script src="support/vismemCC_orientation.js"></script> -->
+<script src="https://timbrady.org/turk/TimTurkTools.js"></script>
+<link rel="stylesheet" type="text/css" href="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v7_centerCue/support/contReport_v5.css">
+<link rel="stylesheet" type="text/css" href="https://psyc241.ucsd.edu/S_Tim/UMI_Task_v7_centerCue/support/showTrials_v5.css">
+<!-- <link rel="stylesheet" type="text/css" href="https://psyc241.ucsd.edu/Chaipat/JS_SD/support/experiment_v5.css"> -->
+
+
+<style type="text/css">.trialDiv {
+
+      /* border: 2px solid gray;*/
+      border: 0px;
+      padding: auto;
+      width: auto;
+      position: relative;
+      top: 20px;
+      left: 50%;
+      /* bring your own prefixes */
+      transform: translate(-50%, -50%);
+      text-align: center;
+      display: none;
+    }
+
+    body {
+	  
+      font-family: Arial, Helvetica;
+      background-color: #808080;
+      font-size: 12pt;
+    }
+
+    #submitButton {
+      display: none;
+    }
+
+    #instructions {
+      width: 60%;;
+      margin: 0 auto;
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    #startExperiment {
+      color: rgb(200,200,200);
+      text-decoration: none;
+    }
+
+    #startExperiment:hover{
+      color: white;
+    }
+
+    #startExperimentButton {
+      width: 200px;
+      text-align: center;
+      border: 4px outset gray;
+      background: gray;
+      padding: 5px;
+      margin: 0 auto;
+    }
+
+    #meter{
+    width: 10cm;
+    height: 10cm;
+    }
+
+    .instr {
+      display: none;
+    }
+    #done {
+    display: none;
+    }
+
+/*    .stimulusR{
+        position: absolute;
+        width: 1024px;
+        height: 1024px;
+        display: none;
+        right: 10%; 
+        z-index: 1;
+    }
+
+    .stimulusL {
+        position: absolute;
+        width: 512px;
+        height: 512px;
+        display: none;
+        left: 10%; 
+        z-index: 1;
+    }*/
+
+    /*#item2 {
+    right: 1%; 
+    z-index: 1;
+    }*/
+
+</style>
+
+
+
+<div class="taskDiv" id="done">Saving data...</div>
+
+<p><input id="submitButton" name="submitButton" style="display: none" type="submit" value="Submit" /></p>
+
+<div id="instructions">
+<h2>This task is a orientation memory task.<br />
+Please only do 1 HIT of this task, do not repeat it.</h2>
+
+<p>This HIT will take approximately 25 minutes. You will have to remember a pair of orientated gratings and report one of them by using a mouse to reproduce the orientation. Please do not participate if you do not have normal or corrected-to-normal vision (wearing glasses or contacts is fine). During the HIT, you&#39;ll perform 180 trials of the same task; each trial lasts about 8-10 seconds.</p>
+
+<p>&nbsp;</p>
+
+<p><b>To proceed, please go fullscreen. Your screen needs to be > than 800 pixels and your browser window > 80% of your screen width to procede. </b><br />
+<p><b>NOTE: This HIT is only tested on the Google Chrome Browser and may be incompatable with others. </b><br />
+
+Press <b>F11</b> to go full screen on a Windows PC</p>
+
+<p style="font:5px">Clicking on the button will indicate that you have read this consent document and agree to participate.</p>
+
+<div id="startExperimentButton"><a href="#" id="startExperiment">Start Experiment</a></div>
+
+<p>&nbsp;</p>
+
+<div align="justify" id="consent" style="height:120px; border:1px solid #ccc;font:12px Arial, Helvetica; overflow:auto">
+<p align="center"><b>UNIVERSITY OF CALIFORNIA, SAN DIEGO<br />
+CONSENT TO ACT AS A RESEARCH SUBJECT</b></p>
+
+<p><br />
+Timothy Brady, Ph.D., is conducting a research study to find out more about attention, memory and vision. You have been asked to participate because you are a healthy young adult. There will be approximately 1600 participants in this study this year. The expected duration of the study is 5 years, though your participation will last only between 3 minutes and 45 minutes, with the exact expected timing listed in the HIT description.</p>
+
+<p><br />
+<b>PROCEDURES.</b> If you agree to participate in this study by accepting this HIT and continuing in the task, the following will happen to you:<br />
+&emsp; 1. You will be shown displays of letters, words, or pictures, right here in your web browser.<br />
+&emsp; 2. You will try to perceive and remember these stimuli, and respond by pressing keys or moving and clicking the mouse in a manner that we will describe to you.</p>
+
+<p><br />
+<b>RISKS.</b> You will be required only to continue to interact with your web browser and make responses for a short duration. Thus, no potential risks or discomforts are anticipated except for the possibility that some tasks may be slightly boring. However, there may be risks that are currently unforeseeable.</p>
+
+<p><br />
+<b>PAYMENT/REMUNERATION.</b> In consideration of your time, you will receive payment at the rate described through the Amazon Mechanical Turk system. Compensation will range from $0.60 (for a 3 min task) up to as much as $8 (for a task that takes 45 min), with rates between $8/hr and $12/hr. The exact payment rate for this HIT is provided in the HIT description.</p>
+
+<p><br />
+<b>RIGHTS.</b> You may call the UCSD Human Research Protection Program at 858-657-5100 to ask about your rights as a research subject or to report research-related problems.</p>
+
+<p><br />
+<b>BENEFITS.</b> There will be no direct benefit to you from these procedures. However, the investigator may learn more about basic questions pertaining to attention, memory and vision. This knowledge may have benefits to society in fields ranging from improving education to visual design, but these benefits will be indirect.</p>
+
+<p><br />
+<b>EXPLANATION.</b> The researcher has explained this study to you and answered your questions. If you have questions about the research or research-related problems, including any adverse events, you may reach Dr. Timothy Brady at timbrady@ucsd.edu or 858-822-4530.</p>
+
+<p><br />
+<b>VOLUNTARY NATURE OF PARTICIPATION.</b> Participation in research is entirely voluntary. You may refuse to participate or withdraw at any time without penalty. The alternative to participation is to choose not to participate.</p>
+
+<p><br />
+<b>CONFIDENTIALITY.</b> Research records will be kept confidential to the extent allowed by law. As with all research, there is also the possibility of loss of confidentiality. Information from participants such as yourself will be identified by a subject number, which is not associated with your identity, by the researchers, to minimize the potential loss of confidentiality.</p>
+
+<p><br />
+By clicking &ldquo;I agree&rdquo;, you are indicating that you are at least 18 years old, have read this consent form and agree to participate in this research study. Please print a copy of this page for your records.</p>
+
+<p>&nbsp;</p>
+</div>
+</div>
+
+<div align="center"><canvas height="500" id="myCanvas" style="cursor:default;border:none;outline-width:2px;outline-color:#000000;background:#808080;" width="1200"> </canvas>
+
+<p id="instr">&nbsp;</p>
+</div>
+
+<div class="trialDiv" id="frame1">
+<p><br />
+Please keep your eyes at in the middle (where the <b>+</b> is).<br />
+A target will appear around this fixation point. <br />
+<br />
+Please press <b>space bar</b> to see what this the stimuli presentation will look like.</p>
+</div>
+
+<div class="trialDiv" id="frame21">
+<p><br />
+The two targets will follow eachother. You will have to remember the <b>orientations</b> of them as precisely as possible.<br />
+They will appear only briefly followed by noise patches.<br />
+<br />
+Please press <b>space bar</b> to see what the noise patches look like.</p>
+</div>
+
+<div class="trialDiv" id="frame22">
+<p><br />
+The noise patches ensure an after-image does not remain on your screen.<br/>
+After the noise patches disappear, you will see either: a number <b> 1 or 2 </b> or an <b> X </b>.<br/>
+<br />The numbers correspond to the target that is <b> probably </b> going to be probed later (80%).<br/>
+<br />The X indicate equal probability of both items being probed (50%).<br/>
+
+Please press <b>space bar</b> to see what these look like.</p>
+</div>
+
+<div class="trialDiv" id="frame23">
+  <p>
+  <div> 1 </div>
+  <div> (80% First Target) </div>
+  <div> [press space] </div>
+</p></div>
+
+<div class="trialDiv" id="frame24">
+  <p>
+  <div> X </div>
+  <div> (50% First Target) </div>
+  <div> [press space] </div>
+</p></div>
+
+<div class="trialDiv" id="frame25">
+  <p>
+  <div> 2 </div>
+  <div> (20% First Target) </div>
+  <div> [press space] </div>
+</p></div>
+
+
+<div class="trialDiv" id="frame3">
+<p><br />
+After a brief delay, you will see a second number indicating which of the two targets to report. <br/>
+<b>Always</b> respond to the oreintation indicated by the second symbol.<br />
+<br />
+Please press <b>space bar</b> to see how will you make a response.</p>
+</div>
+
+<div class="trialDiv" id="frame4">
+<p><br />
+You will know that you can make a response when you see this thin circle.<br/>
+Please move your mouse and try to allign the little two circles to match the orientation of the target.<br />
+The easiest way is to move the cursor along the edge of the circle. You will <b> always </b> respond to the target indicated by the number in the middle.
+<br />
+Once you have the orientation you want to submit, please <b>click</b> to continue.</p>
+</div>
+
+<div class="trialDiv" id="frame5">
+<p><br/>
+As a feedback,...<br/>
+If your report is very close to the target (within 10 degrees), the plus sign will turn green.<br/>
+If your report is okay (within 25 degrees), the plus sign will turn yellow.<br />
+If your report is not quite close to the target (more than 25 degrees), the plus sign will turn red.<br />
+Please press <b>space bar</b> to continue.</p>
+</div>
+
+<div class="trialDiv" id="frame6">
+<p><br />
+The next trial will come soon after with two new orientations <br/>
+Please try to remember both of them and report the orientation that we ask for as <b>precisely</b> as you can.<br/>
+<br />
+Please press <b>space bar</b> to continue (please click accept first if you haven&#39;t).</p>
+</div>
+
+<p id="debug">&nbsp;</p>
+
+<form action="examplePause.php" id="record" method="post" name="nextpage"><input id="targ" name="targ" type="hidden" value="[0,0,0,0,0,0,0,0,0,0,0,0]" /> <input id="resp" name="resp" type="hidden" value="[0,0,0,0,0,0,0,0,0,0,0,0]" /> <input id="targAng" name="targAng" type="hidden" value="[0,0,0,0,0,0,0,0,0,0,0,0]" /> <input id="respAng" name="respAng" type="hidden" value="[0,0,0,0,0,0,0,0,0,0,0,0]" /> <input id="rt" name="rt" type="hidden" value="0" /></form>
+
+<script> 
+
+        // Settings
+        var task='allTrain';
+        var c1=document.getElementById("myCanvas");
+        var ctx1=c1.getContext("2d");    
+        var centerX=c1.width/2;
+        var centerY=c1.height/2; 
+        var LRpos = centerX*0.75/2;  
+        // var LRpos = 0;  
+        var picsiz = Math.ceil(LRpos*1.5)*1.5;
+        var LRpos = 0;  
+        var width=c1.width;
+        var height=c1.height;
+        var objSize=35;
+        var objDist=100; 
+        var wheelRad=objSize+objDist+60;
+        var nubX=null;
+        var nubY=null;
+        var numDots=3;
+        var colRot= 0;
+        var circRot= 5.5;
+
+
+        // var srcitem00 = "https://psyc241.ucsd.edu/Chaipat/JS_SD/support/gaborT0.png";
+        // var srcitem01 = "https://psyc241.ucsd.edu/Chaipat/JS_SD/support/gaborT1.png";
+        // var srcitem20 = "https://psyc241.ucsd.edu/Chaipat/JS_SD/support/gaborN0.png";
+        // var srcitem21 = "https://psyc241.ucsd.edu/Chaipat/JS_SD/support/gaborN1.png";
+        
+
+        var srcitem00 = "support/gaborT0.png";
+        var srcitem01 = "support/gaborT1.png";
+        var srcitem20 = "support/gaborN0.png";
+        var srcitem21 = "support/gaborN1.png";
+        
+
+
+        var prestim     = 50;
+        var stimdur     = 500;
+        var noisedur    = 200;
+        var interstim   = 300; 
+        var retrocue    = 750;
+        var delay_mid   = 2000;
+        var postcue     = 250;
+        // var delay_end   = 500;
+        var feedbacktime = 500;
+        var iti         = 2000;
+        // var cond        = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2]]; // cue type (arrow or color) vs. cue direction (left, center, right)
+        var cond        = [0,1,2]; // cue pointer (1,2,X)
+        // var cueColors   =  ['#ff0000','#00ff00','#ffffff'];
+        var cueColors   = ['#0080FF','#ff7f00','#B3B3B3']
+        var trlrep      = 60; //30
+        var trlswitch   = trlrep*.2;
+        var trlstay     = trlrep-trlswitch;
+        var pointto     = [90,270,45]; // middle value should never be called
+
+        var nTrials     = cond.length*trlrep;
+
+        var trialStruct = [];
+        
+        var alltstord = 0;
+        var allcolAng =[];
+        var rt=[];
+        var moveLast=0;
+        var isTest=false;
+
+        var GaborTrials = [];
+        for (var irep = 0; irep < trlrep; irep++){   
+            for (var icond = 0 ; icond < cond.length; icond++){
+
+              var curOrient1 = (Math.random()*180);
+              var curOrient2 = (Math.random()*180); 
+              var noiseOrient1 = (Math.random()*180);
+              var noiseOrient2 = (Math.random()*180); 
+
+              var trialMode =  cond[icond]; //- 
+              var angles = wrap([curOrient1, curOrient2],90);
+              var noise = wrap([noiseOrient1, noiseOrient2],90);
+              // var cueLeft = Math.random(1)>0.5;
+              if (irep < trlswitch){
+                if (trialMode!= 2){
+                  var probeLeft = trialMode[1]==1;}
+                else{ 
+                  var probeLeft = irep>= trlswitch/2;}}
+              else{
+                if (trialMode!= 2){
+                  var probeLeft = trialMode[1]==0;}
+                else {
+                  var probeLeft = irep>= (trlstay/2 + trlswitch);}}
+
+              var cueType = 'Number'
+              var cueDirec= ['1','2','X'][trialMode];
+
+              GaborTrials.push({'orients': angles,
+                'probeLeft': probeLeft,
+                'iti': iti,
+                'cueType': cueType,
+                'cueDirec': cueDirec,
+                // 'isPractice': true,
+                'correctAngle': angles[0],
+                'correctAngleRad':angles[0]*Math.PI/180,
+                'noise': noise,
+                'trialMode': trialMode});
+
+            }
+          }
+        
+        
+
+        shuffle(GaborTrials);
+        var trialOrder = [];for (itrl = 0; itrl<nTrials;itrl++){trialOrder.push(itrl)};
+
+        var selColor=[];var selAng=[];
+        for (var item=0;item<numDots;item++){selColor[item]='#FFFFFF';selAng[item]=null};
+
+
+        function wrap(v,bound) {
+          w = Array(v.length)
+          for (var i=0; i<v.length; i++) {
+
+            
+            if (v[i]>=(-bound)) { w[i] = ((v[i]+bound)%(bound*2) )-bound;}
+            if (v[i]<(-bound)) { w[i] = ((v[i]+bound)%(bound*2) + bound*2)-bound;}
+
+          }
+          return w;
+        } 
+
+
+        function shuffle(array) {
+          var currentIndex = array.length, temporaryValue, randomIndex;
+
+          // While there remain elements to shuffle...
+          while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+          }
+
+          return array;
+        }
+        
+       
+
+        var rt=[];
+        var moveLast=0;
+        
+        
+        var isTest=false;
+        var isTrain = false;
+        var currProbe=-1;
+        
+        
+        function makeCrosshair(){
+            // Draw rectangles
+                makeRectangle('cross1',centerX,centerY,4,12,false,'#000000','#000000');
+                makeRectangle('cross2',centerX,centerY,12,4,false,'#000000','#000000');
+        }
+        
+        function makeColorWheelBW(){
+            makeCircle('circout',centerX,centerY,wheelRad+objSize*0.05,false,0,'#000000','#808080')
+            makeCircle('circin',centerX,centerY,wheelRad,false,0,'#808080','#808080')
+        }
+        function makeColorNub(){
+            // Draw nub on color wheel using 
+            makeCircle('colorWheelNub',centerX+nubX,centerY+nubY,5,false,0,'#d3d3d3','#d3d3d3');
+            makeCircle('colorWheelNub',centerX-nubX,centerY-nubY,5,false,0,'#d3d3d3','#d3d3d3');
+        }
+        
+        function makeProbe(tothisside){
+            makeTriangle('probe',centerX,centerY,20,30,'#000000','#000000',pointto[tothisside]);
+            // makeTriangle('probe',centerX,centerY,20,20,'#ffffff','#ffffff',tothisside);
+        }
+        function makeColorCue(tothisside){
+            // makeTriangle('cue',centerX,centerY,20,20,'#000000','#000000',tothisside);
+            makeCircle('Colorcue',centerX,centerY,8,false,0,cueColors[tothisside]);
+        }
+        function makeArrowCue(tothisside){
+          if (tothisside!=2){
+            makeTriangle('cue',centerX,centerY,20,30,'#ffffff','#ffffff',pointto[tothisside]);
+          }
+          else {
+            makeTriangle('cue0',centerX,centerY,20,20,'#ffffff','#ffffff',pointto[0]); // just overlapping triagles?
+            makeTriangle('cue1',centerX,centerY,20,20,'#ffffff','#ffffff',pointto[1]);
+          }
+        }
+
+        function makeNumberCue(text){
+            // makeTriangle('cue',centerX,centerY,20,20,'#000000','#000000',tothisside);
+            makeText('arrowcue',centerX-12,centerY+22,text,'Black','50px Arial');
+        }
+
+        var st=null;
+        function startTime(){
+            var d = new Date();
+            st=d.getTime();
+        }
+
+        function endTime(){
+            
+            var d = new Date();
+            timeDif=d.getTime()-st;
+            return timeDif;
+        }
+
+
+        var curTrial = 0;
+
+        function trialIsOver() {
+            
+            //givefeedback 
+            erase(ctx1);
+            clear();
+            feedback(Math.abs(wrap([selAng-GaborTrials[curTrial].orients[0]],90)[0]));
+            drawObjects(ctx1,objects);
+            setTimeout(function(){
+
+              // // Initial
+              // erase(ctx1);
+              // clear();
+              // // makeCrosshair();
+              // drawObjects(ctx1,objects);
+
+              var curtrialStruct = GaborTrials[curTrial];
+              
+              curtrialStruct.respAng  = allcolAng[curTrial];
+              curtrialStruct.rt = rt[curTrial];
+              curtrialStruct.realtime = realtime;
+
+              trialStruct.push(curtrialStruct);
+
+              // console.log(curTrial)
+
+              curTrial = curTrial+1 ; 
+
+              if (curTrial >= nTrials){
+                  Done();
+                  // $('#submitButton'.show());
+              } else {
+                  
+                  showTrial(trialOrder[curTrial]);
+                  startTrialTime = new Date();
+              }
+
+
+            },feedbacktime)
+        }
+
+
+        function showTrial(whichtrial){
+        	// var pointer = [1,2];
+             isTest=false;
+
+             p = [];
+             p.oL     = GaborTrials[whichtrial].orients[ Math.abs(!GaborTrials[whichtrial].probeLeft) ];
+             p.oR     = GaborTrials[whichtrial].orients[ Math.abs(GaborTrials[whichtrial].probeLeft) ];
+             p.noL    = GaborTrials[whichtrial].noise[ Math.abs(!GaborTrials[whichtrial].probeLeft) ];
+             p.noR    = GaborTrials[whichtrial].noise[ Math.abs(GaborTrials[whichtrial].probeLeft) ];
+             p.picL   = GaborTrials[whichtrial].trialMode[ Math.abs(!GaborTrials[whichtrial].probeLeft) ];
+             p.picR   = GaborTrials[whichtrial].trialMode[ Math.abs(GaborTrials[whichtrial].probeLeft) ];
+             // p.pointto = pointto[Math.abs(!GaborTrials[whichtrial].cueLeft)];
+             p.probeDir = [1,2][Math.abs(!GaborTrials[whichtrial].probeLeft)];
+             p.cueDir = GaborTrials[whichtrial].cueDirec;
+
+             // p.pointto  = GaborTrials[whichtrial].trialMode[1];
+             // p.pointtype = GaborTrials[whichtrial].trialMode[0];
+             
+
+             p.targetang = GaborTrials[whichtrial].orients[0];
+             p.whichtrial = whichtrial;
+             realtime = [];
+             prestim = GaborTrials[whichtrial].iti;
+             curprobe = p.probeDir;
+             // console.log(curprobe)
+
+             
+
+             erase(ctx1);
+             clear();
+             // makeCrosshair();
+             drawObjects(ctx1,objects);
+             initialT0(p);
+             followT0(p);
+             initialN0(p);
+             followN0(p);
+             interstim0(p)
+             initialT1(p);
+             followT1(p);
+             initialN1(p);
+             followN1(p);
+             precue(p);
+             Showcue(p);
+             preprobe(p);
+             Showprobe(p);
+             Resp(p);
+
+        }
+
+
+        function initialT0(p){
+            // Initial
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+
+                c = makeIm('#itemR',centerX,centerY,picsiz,picsiz,window['srcitem00'],1, p.oL) // item 1a
+
+                drawImb(ctx1,c); // dramIma
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+
+                var DT00 = new Date();
+                T00 = DT00.getTime();
+                realtime.push(T00);
+                // console.log(T0);
+            },prestim);
+        }
+
+        function followT0(p){
+            // follow
+	        setTimeout(function(){
+             // Draw stimuli
+	            erase(ctx1);
+                clear();
+	            c = makeIm('#itemL',centerX,centerY,picsiz,picsiz,window['srcitem01'],1, p.oL) // item 1b
+	            
+	            drawImb(ctx1,c);
+	            makeCrosshair();
+	            drawObjects(ctx1,objects);
+
+                var DT0 = new Date();
+                T0 = DT0.getTime();
+                realtime.push(T0);
+                // console.log(T0);
+            },prestim+stimdur);
+        }
+
+        function initialN0(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                 c = makeIm('#itemL',centerX-LRpos,centerY,picsiz,picsiz,window['srcitem' + 20],1, p.noL) // noise 1a
+                 
+                 drawImb(ctx1,c); // dramIma
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+                 
+
+                 clear();
+                 makeCrosshair();
+                 
+
+                var DT1 = new Date();
+                T1 = DT1.getTime();
+                realtime.push(T1);
+                // console.log(T0);
+            },prestim+stimdur+stimdur);
+        }
+
+        function followN0(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                c = makeIm('#itemL',centerX-LRpos,centerY,picsiz,picsiz,window['srcitem' + 21],1, p.noL) // noise 1b
+               
+               drawImb(ctx1,c); // dramIma
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+                 
+                var DT2 = new Date();
+                T2 = DT2.getTime();
+                realtime.push(T2);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur);
+        }
+
+        function interstim0(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+
+                var DT3 = new Date();
+                T3 = DT3.getTime();
+                realtime.push(T3);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur+noisedur);
+        }
+
+        // second target starts here
+        function initialT1(p){
+            // Initial
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                 c = makeIm('#itemR',centerX+10,centerY,picsiz,picsiz,window['srcitem00'],1, p.oR) // item 1a
+                drawImb(ctx1,c); // dramIma
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+
+                var DT00 = new Date();
+                T00 = DT00.getTime();
+                realtime.push(T00);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur+noisedur+interstim);
+        }
+
+        function followT1(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                 c = makeIm('#itemL',centerX,centerY,picsiz,picsiz,window['srcitem01'],1, p.oR) // item 1b
+              drawImb(ctx1,c); // dramIma
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+
+                var DT0 = new Date();
+                T0 = DT0.getTime();
+                realtime.push(T0);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur+noisedur+interstim+stimdur);
+        }
+
+        function initialN1(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                 c = makeIm('#itemL',centerX-LRpos,centerY,picsiz,picsiz,window['srcitem' + 20],1, p.noR) // noise 1a
+                drawImb(ctx1,c); // dramIma
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+
+                var DT1 = new Date();
+                T1 = DT1.getTime();
+                realtime.push(T1);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur+noisedur+interstim+stimdur+stimdur);
+        }
+
+        function followN1(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                 c = makeIm('#itemL',centerX-LRpos,centerY,picsiz,picsiz,window['srcitem' + 21],1, p.noR) // noise 1b
+                drawImb(ctx1,c); // dramIma
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+
+                var DT2 = new Date();
+                T2 = DT2.getTime();
+                realtime.push(T2);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur+noisedur+interstim+stimdur+stimdur+noisedur);
+        }
+
+
+
+
+        function precue(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+
+                var DT3 = new Date();
+                T3 = DT3.getTime();
+                realtime.push(T3);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur+noisedur+interstim+stimdur+stimdur+noisedur+noisedur);
+        }
+
+        function Showcue(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                // if (p.pointtype==0){
+                //     makeArrowCue(p.pointto);
+                // } else {makeColorCue(p.pointto);}
+                makeNumberCue(p.cueDir)
+
+                drawObjects(ctx1,objects);
+
+                var DT4 = new Date();
+                T4 = DT4.getTime();
+                realtime.push(T4);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur+noisedur+interstim+stimdur+stimdur+noisedur+noisedur+postcue);
+        }
+       function preprobe(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+
+                var DT3 = new Date();
+                T3 = DT3.getTime();
+                realtime.push(T3);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur+noisedur+interstim+stimdur+stimdur+noisedur+noisedur+postcue+postcue);
+        }
+
+       function Showprobe(p){
+            // follow
+            setTimeout(function(){
+                // Draw stimuli
+                erase(ctx1);
+                clear();
+                // makeProbe(p.probeDir);
+                makeNumberCue(p.probeDir)
+                drawObjects(ctx1,objects);
+
+                var DT4 = new Date();
+                T4 = DT4.getTime();
+                realtime.push(T4);
+                // console.log(T0);
+            },prestim+stimdur+stimdur+noisedur+noisedur+interstim+stimdur+stimdur+noisedur+noisedur+postcue+postcue+delay_mid);
+        }
+
+        function Resp(p){
+            // Cue
+            setTimeout(function(){
+                
+                var DT5 = new Date();
+                T5 = DT5.getTime();
+                realtime.push(T5);
+                targAng = p.targetang;
+
+                erase(ctx1);
+                clear();
+                makeColorWheelBW();
+                makeNumberCue(p.probeDir)
+                drawObjects(ctx1,objects);
+
+                isTest=true;
+                startTime();
+                
+            },prestim+stimdur+stimdur+noisedur+noisedur+interstim+stimdur+stimdur+noisedur+noisedur+postcue+postcue+delay_mid+postcue);
+        }
+
+        function showFirstTrial() {
+            isTrain = false;
+            $(document).off("keypress.trialWait");
+            // Draw first fixation 
+            makeCrosshair();
+            drawObjects(ctx1,objects);
+            // Begin
+            showTrial(trialOrder[0]);
+            startTrialTime = new Date();
+            $('.trialDiv').hide();
+
+        }
+
+        function showPractice_f1(){
+            if ($(window).width() >= 600) { // && screen.width*.8 < $(window).width())
+                $('#instructions').hide();
+                // myCanvas.style.border = 'solid' 
+                 // Draw first fixation 
+                // c = makeIm('#itemR',centerX,centerY,picsiz,picsiz,srcitem00,1, 22) // item 1a
+                // drawImb(ctx1,c); // dramIma
+                makeCrosshair();
+                drawObjects(ctx1,objects);
+
+                $('#frame1').show();
+                // Begin
+                $(document).on("keypress.trialWait", PressedKey);
+
+                function PressedKey(evt) {
+                    if (evt.which == 32) {
+                        showPractice_f21();
+                    }
+                }
+            }
+        }
+
+        function showPractice_f21(){
+        	$(document).off("keypress.trialWait");
+            $('#frame1').hide();
+
+            erase(ctx1);
+            clear();
+            p=[];
+            p.oL = 10;
+            p.oR = 80;
+            p.noL = 15;
+            p.noR = 5;
+            p.targetang = 40;
+            p.probeDir = 1;
+            p.cueDir = 2;
+		     initialT0(p);
+		     followT0(p);
+		     initialN0(p);
+		     followN0(p);
+		     interstim0(p)
+		     initialT1(p);
+		     followT1(p);
+		     initialN1(p);
+		     followN1(p);
+		    setTimeout(function(){
+            $('#frame21').show();
+            $(document).on("keypress.trialWait", PressedKey);
+            function PressedKey(evt) { if (evt.which == 32) {showPractice_f22();}}
+         },3000)   
+        }
+
+        function showPractice_f22(){
+            $(document).off("keypress.trialWait");
+            $('#frame21').hide();
+            erase(ctx1);
+            clear();
+            c = makeIm('#itemL',centerX,centerY,picsiz,picsiz,srcitem20,1,10)
+            drawImb(ctx1,c);
+            makeCrosshair();
+            drawObjects(ctx1,objects);
+            $('#frame22').show();
+            $(document).on("keypress.trialWait", PressedKey2);
+            function PressedKey2(evt) { if (evt.which == 32) {showPractice_f23();}}
+        }
+        function showPractice_f23(){
+          $(document).off("keypress.trialWait");
+          $('#frame22').hide();
+          erase(ctx1);
+          clear();
+          makeNumberCue('1');
+          drawObjects(ctx1,objects);
+          $('#frame23').show();
+          $(document).on("keypress.trialWait", function press10(evt) {if (evt.which == 32) {showPractice_f24();}});
+        }
+
+          function showPractice_f24(){
+          $(document).off("keypress.trialWait");
+          $('#frame23').hide();
+          erase(ctx1);
+          clear();
+          makeNumberCue('X');
+          drawObjects(ctx1,objects);
+          $('#frame24').show();
+          $(document).on("keypress.trialWait", function press10(evt) {if (evt.which == 32) {showPractice_f25();}});
+        }
+
+          function showPractice_f25(){
+          $(document).off("keypress.trialWait");
+          $('#frame24').hide();
+          erase(ctx1);
+          clear();
+          makeNumberCue('2');
+          drawObjects(ctx1,objects);
+          $('#frame25').show();
+          $(document).on("keypress.trialWait", function press10(evt) {if (evt.which == 32) {showPractice_f3();}});
+        }
+
+
+        function showPractice_f3(){
+            $(document).off("keypress.trialWait");
+            $('#frame25').hide();
+            curprobe = '1'
+            erase(ctx1);
+            clear();
+            makeNumberCue(curprobe);
+            drawObjects(ctx1,objects);
+            $('#frame3').show();
+            $(document).on("keypress.trialWait", PressedKey3);
+            function PressedKey3(evt) { if (evt.which == 32) {showPractice_f4();}}
+        }
+
+        function showPractice_f4(){
+                $(document).off("keypress.trialWait");
+                erase(ctx1);
+                clear();
+
+               
+                isTrain = true;
+                // console.log(order)
+                $('#frame3').hide();
+                makeColorWheelBW();
+                // makeCrosshair();
+                makeNumberCue(curprobe);
+                drawObjects(ctx1,objects);
+                
+                $('#frame4').show();
+        }
+
+        
+
+        function showPractice_f5(){
+            $(document).off("keypress.trialWait");
+            thiserr0 = Math.abs(wrap([selAng-10],90)[0]);
+            console.log(thiserr0)
+            $('#frame4').hide();
+            erase(ctx1);
+            clear();
+            feedback(thiserr0);
+            drawObjects(ctx1,objects);
+            $('#frame5').show();
+            // $(document).on("keypress.trialWait", PressedKey);
+            $(document).on("keypress.trialWait", function press5 (evt) { evt.preventDefault(); showPractice_f6();});
+            // function PressedKey(evt) { if (evt.which == 32) {showFirstTrial();}}
+        }
+
+        function showPractice_f6(){
+            $(document).off("keypress.trialWait");
+            thiserr = Math.abs(wrap([selAng-10],90)[0]);
+
+            $('#frame5').hide();
+            erase(ctx1);
+            clear();
+            c = makeIm('#itemL',centerX,centerY,picsiz,picsiz,srcitem01,1,80)
+
+            makeCrosshair();
+
+            drawImb(ctx1,c);
+            drawObjects(ctx1,objects);
+            $('#frame6').show();
+            // $(document).on("keypress.trialWait", PressedKey);
+            $(document).on("keypress.trialWait", function press6 (evt) { evt.preventDefault();  if (IsTurkPreview() == true) {showFirstTrial();}});
+            // function PressedKey(evt) { if (evt.which == 32) {showFirstTrial();}}
+        }
+
+
+        function Done() {
+
+            $("#myCanvas").hide();
+            $("#done").show();
+
+            var dataToServer = {};
+            dataToServer.id = getParameterByName("subjectId"); /* getParameterByName("code") */
+            dataToServer.experimenter = 'S_Tim';
+            dataToServer.experimentName = 'UMI_Task_v6_cueType';
+            dataToServer.curData = JSON.stringify(trialStruct);
+            $.post("https://psyc241.ucsd.edu/Turk/save.php", dataToServer, AfterSuccessDataSaving).fail(AfterFailedSaving);
+        }
+
+        function AfterSuccessDataSaving() {
+          // After they are done, send them here:
+          // window.location = "https://ucsd.sona-systems.com/webstudy_credit.aspx?experiment_id=1267&credit_token=805f6634de5a46b3aecffe2818d8d90c&survey_code=" + getParameterByName("code");
+          $('#submitButton').show();
+          $('#done').html("All done, thanks! Please click submit button.");
+          
+          console.log("Saved!");
+        }
+
+        function AfterFailedSaving() {
+          console.log("oops, failed to save");
+
+          // window.location = "https://ucsd.sona-systems.com/webstudy_credit.aspx?experiment_id=1267&credit_token=805f6634de5a46b3aecffe2818d8d90c&survey_code=" + getParameterByName("code");  
+          $('#submitButton').show();
+          $('#done').html("All done, thanks! Please click submit button.");
+
+        }
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        $('#startExperiment').click(showPractice_f1);
+        $('.responseButton').click(trialIsOver);
+
+        /**
+         * Gets a URL parameter from the query string
+         */
+        function turkGetParam( name, defaultValue ) { 
+           var regexS = "[\?&]"+name+"=([^&#]*)"; 
+           var regex = new RegExp( regexS ); 
+           var tmpURL = window.location.href; 
+           var results = regex.exec( tmpURL ); 
+           if( results == null ) { 
+             return defaultValue; 
+           } else { 
+             return results[1];    
+           } 
+        }
+
+        function GetWorkerId() {
+            var workerId = turkGetParam( 'workerId', 'NONE' );
+            return workerId;
+        }   
+
+        function IsTurkPreview() {
+            return GetWorkerId() == "NONE";
+        }   
+
+        function IsOnTurk() {
+          try {
+            return ((window.location.host.indexOf('mturk')!=-1) || document.forms["mturk_form"] ||
+              (top != self && window.parent.location.host.indexOf("mturk") != -1));
+          } catch(err) {
+            // insecure content trying to access https://turk probably, so say yes:
+            return true;
+          }
+        }
+
+        $('#startExperiment').click(showPractice_f1);
+        $('.responseButton').click(trialIsOver);
+    </script><!-- do not put this on Turk --><!-- <input type="submit" id="submitButton">
